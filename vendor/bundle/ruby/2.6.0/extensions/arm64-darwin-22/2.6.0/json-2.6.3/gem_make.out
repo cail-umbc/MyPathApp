@@ -1,0 +1,13 @@
+current directory: /Users/fourkan/Dev/ReactNative2/react-native-geolocation-service/example/vendor/bundle/ruby/2.6.0/gems/json-2.6.3/ext/json
+/Users/fourkan/.rvm/rubies/ruby-2.6.10/bin/ruby -I /Users/fourkan/.rvm/rubies/ruby-2.6.10/lib/ruby/site_ruby/2.6.0 -r ./siteconf20230423-24807-w16bmi.rb extconf.rb
+creating Makefile
+
+current directory: /Users/fourkan/Dev/ReactNative2/react-native-geolocation-service/example/vendor/bundle/ruby/2.6.0/gems/json-2.6.3/ext/json
+make "DESTDIR=" clean
+
+current directory: /Users/fourkan/Dev/ReactNative2/react-native-geolocation-service/example/vendor/bundle/ruby/2.6.0/gems/json-2.6.3/ext/json
+make "DESTDIR="
+make: Nothing to be done for `all'.
+
+current directory: /Users/fourkan/Dev/ReactNative2/react-native-geolocation-service/example/vendor/bundle/ruby/2.6.0/gems/json-2.6.3/ext/json
+make "DESTDIR=" install
