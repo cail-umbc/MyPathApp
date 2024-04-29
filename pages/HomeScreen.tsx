@@ -11,10 +11,11 @@ import appConfig from '../app.json';
 const sleep = time => new Promise(resolve => setTimeout(() => resolve(), time));
 import BackgroundJob from 'react-native-background-actions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {loadUserWheelchairInfo, createTempSessionInfo, getTempSessionInfo, addTempSessionInfo, addSessionInfo, getID, setDataCollectStartTime, getDataCollectStartTime, getSessionInfo, addStartQnsAns, getStartQnsAns} from '../services/AsyncStorageService'; 
+import {loadUserWheelchairInfo, createTempSessionInfo, getTempSessionInfo, addSessionInfo, getID, setDataCollectStartTime, getDataCollectStartTime, getSessionInfo, addStartQnsAns} from '../services/AsyncStorageService'; 
 import CustomBtn from '../components/CustomBtn'
-import GlobalArraySingleton from './GlobalArraySingleton';
-import GlobalWheelchairSingleton from './GlobalWheelchairSingleton';
+import GlobalArraySingleton from './SingletonAcc/GlobalArraySingleton';
+import GlobalWheelchairSingleton from './SingletonAcc/GlobalWheelchairSingleton';
+import {onAddVirtualSessionArray, setStatus, ShowTime} from './Utils/AddtoSessions';
 import { getDistance } from 'geolib';
 import { RadioButton } from 'react-native-paper';
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -43,6 +44,8 @@ const TaskSchema = {
 };
 
 const HomeScreen = ({navigation}) => {
+  
+  //============ Declaration ==============
   const [forceLocation, setForceLocation] = useState(true);
   const [highAccuracy, setHighAccuracy] = useState(true);
   const [locationDialog, setLocationDialog] = useState(true);
@@ -88,7 +91,14 @@ const HomeScreen = ({navigation}) => {
 
   DropDownPicker.setListMode("SCROLLVIEW");
 
+  let tmpWcItemsData = null
+  const [wcData, setWcData] = React.useState([]);
+  const [openWc, setOpenWc] = useState(false);
+  const [valueWc, setValueWc] = useState(null);
+  const [itemsWc, setItemsWc] = useState();
+  //============ End Declaration ==============
 
+  //================Effects===========
   useEffect(() => {
    (async () => {
      const realmm = await Realm.open({
@@ -120,37 +130,26 @@ const HomeScreen = ({navigation}) => {
     }, MINUTE_MS);
     return () => clearInterval(interval);
   }, [])
-
-  // useEffect(() => {
-  //   const backAction = () => {
-  //     if (modalVisible) {
-  //       return false;
-  //     }
-  //     return true;
-  //   };
-  //   const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
-  //   return () => backHandler.remove();
-  // }, [modalVisible]);
-
-  // useEffect(() => {
-  //   const backAction = () => {
-  //     console.log("Inside back button")
-  //     if (startModalVisible) {
-  //       //setStartModalVisible(false)
-  //       return false;
-  //     }
-  //     return true;
-  //   };
-  //   const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
-  //   return () => backHandler.remove();
-  // }, [startModalVisible]);
+  //===============End Effects=========
 
 
-  let tmpWcItemsData = null
-  const [wcData, setWcData] = React.useState([]);
-  const [openWc, setOpenWc] = useState(false);
-  const [valueWc, setValueWc] = useState(null);
-  const [itemsWc, setItemsWc] = useState();
+
+
+  //========== Location & bg task ==========
+  const options = {
+    taskName: 'MyPath',
+    taskTitle: 'MyPath',
+    taskDesc: 'MyPath background service is running',
+    taskIcon: {
+      name: 'ic_launcher',
+      type: 'mipmap',
+    },
+    color: '#ff00ff',
+    linkingURI: 'exampleScheme://chat/jane',
+    parameters: {
+      delay: 20,
+    },
+  };
 
   const stopLocationUpdates = () => {
     if (Platform.OS === 'android') {
@@ -164,33 +163,6 @@ const HomeScreen = ({navigation}) => {
       setObserving(false);
     }
     sensorUnsubscribe();
-  };
-
-  const hasPermissionIOS = async () => {
-    const openSetting = () => {
-      Linking.openSettings().catch(() => {
-        Alert.alert('Unable to open settings');
-      });
-    };
-    const status = await Geolocation.requestAuthorization('whenInUse');
-
-    if (status === 'granted') {
-      return true;
-    }
-    if (status === 'denied') {
-      Alert.alert('Location permission denied');
-    }
-    if (status === 'disabled') {
-      Alert.alert(
-        `Turn on Location Services to allow "${appConfig.displayName}" to determine your location.`,
-        '',
-        [
-          { text: 'Go to Settings', onPress: openSetting },
-          { text: "Don't Use Location", onPress: () => {} },
-        ],
-      );
-    }
-    return false;
   };
 
   const hasLocationPermission = async () => {
@@ -226,128 +198,6 @@ const HomeScreen = ({navigation}) => {
     }
     return false;
   };
-  
-  const [backgroundTimerId, setBackgroundTimerId] = useState(0)
-  const onBackgroundTimer = async () => {
-    const curTime = Date.now()
-    await setDataCollectStartTime(curTime);
-    const intervalId = BackgroundTimer.setInterval(() => {
-      StoreData();
-    }, 15);
-    setBackgroundTimerId(intervalId)
-  }
-
-  const StoreData = async() => {
-    try {
-      realm.current.write(() => {
-        var task1 = realm.current.create('senData', {
-          time_stamp: Date.now(),
-          e: ev.current + '',
-          ax: ax.current.toFixed(8) + '',
-          ay: ay.current.toFixed(8) + '',
-          az: az.current.toFixed(8) + '',
-          gx: gx.current.toFixed(8) + '',
-          gy: gy.current.toFixed(8) + '',
-          gz: gz.current.toFixed(8) + '',
-          mx: mx.current.toFixed(8) + '',
-          my: my.current.toFixed(8) + '',
-          mz: mz.current.toFixed(8) + '',
-          lat: lat.current.toFixed(8) + '',
-          lng: lng.current.toFixed(8) + '',
-          p: p.current.toFixed(8) + '',
-          s: '0',
-        });
-        
-      });
-    } catch (Error) {
-      console.log(Error);
-    }
-  };
-
-  const onStopBackgroundTimer = async () =>{
-    BackgroundTimer.stop();
-    BackgroundTimer.clearInterval(backgroundTimerId);
-    await BackgroundJob.stop();
-    const startTime = await getDataCollectStartTime();
-    const curTime = Date.now()
-    const elpTime = curTime - parseInt(startTime);
-
-    const dis = getTotalDistance()
-    await addSessionInfo(startTime, curTime, dis)
-    setSessionData(startTime, curTime, elpTime, dis)
-  }
-
-  const getTotalDistance = () =>{
-    return -1
-  }
-
-  const [stTime, setstTime] = React.useState(0);
-  const [endTime, setendTime] = React.useState(0);
-  const [sbsStatus, setsbsStatus] = React.useState(0);
-  const [elpTime, setelpTime] = React.useState("");
-  const setSessionData = async(startTime, curendTime, curelpTime, sessionBackupStatus) =>
-  {
-    setstTime(startTime)
-    setendTime(curendTime)
-    setsbsStatus(sessionBackupStatus)
-    setelpTime(curelpTime)
-  }
-
-  const storeSensorData = async(value)=>{
-    setUpdateIntervalForType(SensorTypes.accelerometer, 15);
-    setUpdateIntervalForType(SensorTypes.gyroscope, 15);
-    setUpdateIntervalForType(SensorTypes.magnetometer, 15);
-
-    try {
-       sensorSubscriptionAcc.current = accelerometer.subscribe(
-         ({x, y, z, timestamp}) => {
-           //console.log(x);
-           ax.current = x;
-           ay.current = y;
-           az.current = z;
-         },
-       );
-     } catch (error) {}
-
-    try {
-       sensorSubscriptionGyr.current = gyroscope.subscribe(
-         ({x, y, z, timestamp}) => {
-           gx.current = x;
-           gy.current = y;
-           gz.current = z;
-         },
-       );
-     } catch (error) {}
-
-    try {
-       sensorSubscriptionMag.current = magnetometer.subscribe(
-         ({x, y, z, timestamp}) => {
-           mx.current = x;
-           my.current = y;
-           mz.current = z;
-         },
-       );
-     } catch (error) {}
-  }
-
-  const sensorUnsubscribe = async () =>{
-    if (sensorSubscriptionAcc.current != null){
-      sensorSubscriptionAcc.current.unsubscribe();
-      sensorSubscriptionAcc.current = null;
-    }
-
-    if (sensorSubscriptionGyr.current != null)
-    {
-      sensorSubscriptionGyr.current.unsubscribe();
-      sensorSubscriptionGyr.current = null;
-    }
-
-    if (sensorSubscriptionMag.current != null)
-    {
-      sensorSubscriptionMag.current.unsubscribe();
-      sensorSubscriptionMag.current = null;
-    }
-  }
 
   const getLocationUpdates = async () => {
     const hasPermission = await hasLocationPermission();
@@ -393,85 +243,6 @@ const HomeScreen = ({navigation}) => {
     );
   };
 
-  const startForegroundService = async () => {
-    if (Platform.Version >= 26) {
-      await VIForegroundService.getInstance().createNotificationChannel({
-        id: 'locationChannel',
-        name: 'Location Tracking Channel',
-        description: 'Tracks location of user',
-        enableVibration: false,
-      });
-    }
-
-    return VIForegroundService.getInstance().startService({
-      channelId: 'locationChannel',
-      id: 420,
-      title: appConfig.displayName,
-      text: 'Tracking location updates',
-      icon: 'ic_launcher',
-    });
-  };
-
-  const [sensData] = useSensDataMutation()
-  const sendDataToServer = async() =>{
-    const availableData = realm.current.objects('senData').sorted('time_stamp', false);
-
-    if (availableData == null){
-      return
-    } 
-    if (availableData.length > 0){
-      let first_num = availableData[0].time_stamp
-      let last_num = first_num + 70000
-
-      const sendata = realm.current.objects("senData").filtered(
-        first_num + " <= time_stamp && time_stamp <= " + last_num
-      );
-
-      const res = await sensData(sendata)
-
-      if (res.data){
-        console.log("--> ",sendata.length)
-        realm.current.write(() => {
-          realm.current.delete(sendata);});
-      }else{
-      }
-    }
-  }
-
-  const [sessionDataToServer] = useSessionDataMutation()
-  const sendSessionToServer = async() => {
-    const sessionData = await getTempSessionInfo()
-    if (sessionData.length > 0){
-      console.log("Session data sent to server")
-      console.log(sessionData)
-      const res = await sessionDataToServer(sessionData)
-      if (res.data){
-        await createTempSessionInfo([])
-      }else{
-      }
-    }else{
-    }
-  }
-
-  const options = {
-    taskName: 'MyPath',
-    taskTitle: 'MyPath',
-    taskDesc: 'MyPath background service is running',
-    taskIcon: {
-      name: 'ic_launcher',
-      type: 'mipmap',
-    },
-    color: '#ff00ff',
-    linkingURI: 'exampleScheme://chat/jane',
-    parameters: {
-      delay: 20,
-    },
-  };
-
-  BackgroundJob.on('expiration', () => {
-   console.log('iOS: I am being closed!');
-  });
-  
   const RequestLoc = async () =>{
     const hasPermission = await hasLocationPermission();
     if (!hasPermission) {
@@ -493,6 +264,245 @@ const HomeScreen = ({navigation}) => {
     );
   }
 
+  const startForegroundService = async () => {
+    if (Platform.Version >= 26) {
+      await VIForegroundService.getInstance().createNotificationChannel({
+        id: 'locationChannel',
+        name: 'Location Tracking Channel',
+        description: 'Tracks location of user',
+        enableVibration: false,
+      });
+    }
+
+    return VIForegroundService.getInstance().startService({
+      channelId: 'locationChannel',
+      id: 420,
+      title: appConfig.displayName,
+      text: 'Tracking location updates',
+      icon: 'ic_launcher',
+    });
+  };
+
+  const hasPermissionIOS = async () => {
+    const openSetting = () => {
+      Linking.openSettings().catch(() => {
+        Alert.alert('Unable to open settings');
+      });
+    };
+    const status = await Geolocation.requestAuthorization('whenInUse');
+
+    if (status === 'granted') {
+      return true;
+    }
+    if (status === 'denied') {
+      Alert.alert('Location permission denied');
+    }
+    if (status === 'disabled') {
+      Alert.alert(
+        `Turn on Location Services to allow "${appConfig.displayName}" to determine your location.`,
+        '',
+        [
+          { text: 'Go to Settings', onPress: openSetting },
+          { text: "Don't Use Location", onPress: () => {} },
+        ],
+      );
+    }
+    return false;
+  };
+
+  const [backgroundTimerId, setBackgroundTimerId] = useState(0)
+  const onBackgroundTimer = async () => {
+    const curTime = Date.now()
+    await setDataCollectStartTime(curTime);
+    const intervalId = BackgroundTimer.setInterval(() => {
+      StoreData();
+    }, 15);
+    setBackgroundTimerId(intervalId)
+  }
+
+  const onStopBackgroundTimer = async () =>{
+    BackgroundTimer.stop();
+    BackgroundTimer.clearInterval(backgroundTimerId);
+    await BackgroundJob.stop();
+    const startTime = await getDataCollectStartTime();
+    const curTime = Date.now()
+    const elpTime = curTime - parseInt(startTime);
+
+    const dis = getTotalDistance()
+    await addSessionInfo(startTime, curTime, dis)
+    setSessionData(startTime, curTime, elpTime, dis)
+  }
+  //========== End Location & bg task ==========
+
+
+
+  //========== Sensor & Store ==========
+  const StoreData = async() => {
+    try {
+      realm.current.write(() => {
+        var task1 = realm.current.create('senData', {
+          time_stamp: Date.now(),
+          e: ev.current + '',
+          ax: ax.current.toFixed(8) + '',
+          ay: ay.current.toFixed(8) + '',
+          az: az.current.toFixed(8) + '',
+          gx: gx.current.toFixed(8) + '',
+          gy: gy.current.toFixed(8) + '',
+          gz: gz.current.toFixed(8) + '',
+          mx: mx.current.toFixed(8) + '',
+          my: my.current.toFixed(8) + '',
+          mz: mz.current.toFixed(8) + '',
+          lat: lat.current.toFixed(8) + '',
+          lng: lng.current.toFixed(8) + '',
+          p: p.current.toFixed(8) + '',
+          s: '0',
+        });
+        
+      });
+    } catch (Error) {
+      console.log(Error);
+    }
+  };
+
+  const storeSensorData = async(value)=>{
+    setUpdateIntervalForType(SensorTypes.accelerometer, 15);
+    setUpdateIntervalForType(SensorTypes.gyroscope, 15);
+    setUpdateIntervalForType(SensorTypes.magnetometer, 15);
+
+    try {
+       sensorSubscriptionAcc.current = accelerometer.subscribe(
+         ({x, y, z, timestamp}) => {
+           //console.log(x);
+           ax.current = x;
+           ay.current = y;
+           az.current = z;
+         },
+       );
+     } catch (error) {}
+
+    try {
+       sensorSubscriptionGyr.current = gyroscope.subscribe(
+         ({x, y, z, timestamp}) => {
+           gx.current = x;
+           gy.current = y;
+           gz.current = z;
+         },
+       );
+     } catch (error) {}
+
+    try {
+       sensorSubscriptionMag.current = magnetometer.subscribe(
+         ({x, y, z, timestamp}) => {
+           mx.current = x;
+           my.current = y;
+           mz.current = z;
+         },
+       );
+     } catch (error) {}
+  }
+
+  const DataRestore = async () => {
+    const statusRun = await AsyncStorage.getItem("isRunning");
+    if (statusRun !== null) {
+        let res = JSON.parse(statusRun);
+        setIsRunning(res);
+    }else{
+        //console.log("else status run: " + statusRun);
+    }
+  };
+
+  const getTotalDistance = () =>{
+    return -1
+  }
+
+  const [stTime, setstTime] = React.useState(0);
+  const [endTime, setendTime] = React.useState(0);
+  const [sbsStatus, setsbsStatus] = React.useState(0);
+  const [elpTime, setelpTime] = React.useState("");
+  const setSessionData = async(startTime, curendTime, curelpTime, sessionBackupStatus) =>
+  {
+    setstTime(startTime)
+    setendTime(curendTime)
+    setsbsStatus(sessionBackupStatus)
+    setelpTime(curelpTime)
+  }
+
+  const sensorUnsubscribe = async () =>{
+    if (sensorSubscriptionAcc.current != null){
+      sensorSubscriptionAcc.current.unsubscribe();
+      sensorSubscriptionAcc.current = null;
+    }
+
+    if (sensorSubscriptionGyr.current != null)
+    {
+      sensorSubscriptionGyr.current.unsubscribe();
+      sensorSubscriptionGyr.current = null;
+    }
+
+    if (sensorSubscriptionMag.current != null)
+    {
+      sensorSubscriptionMag.current.unsubscribe();
+      sensorSubscriptionMag.current = null;
+    }
+  }
+  //========== End Sensor & Store ==========
+
+
+
+
+
+  //========== Send Data ==========
+  const [sensData] = useSensDataMutation()
+  const sendDataToServer = async() =>{
+    const availableData = realm.current.objects('senData').sorted('time_stamp', false);
+
+    if (availableData == null){
+      return
+    } 
+    if (availableData.length > 0){
+      let first_num = availableData[0].time_stamp
+      let last_num = first_num + 70000
+
+      const sendata = realm.current.objects("senData").filtered(
+        first_num + " <= time_stamp && time_stamp <= " + last_num
+      );
+
+      const res = await sensData(sendata)
+
+      if (res.data){
+        console.log("--> ",sendata)
+        realm.current.write(() => {
+          realm.current.delete(sendata);});
+      }else{
+        console.log("<==== Data sending failed ====>")
+      }
+    }
+  }
+
+  const [sessionDataToServer] = useSessionDataMutation()
+  const sendSessionToServer = async() => {
+    const sessionData = await getTempSessionInfo()
+    if (sessionData.length > 0){
+      console.log("Session data sent to server")
+      console.log(sessionData)
+      const res = await sessionDataToServer(sessionData)
+      if (res.data){
+        await createTempSessionInfo([])
+      }else{
+      }
+    }else{
+    }
+  }
+  //========== End Send Data ==========
+
+
+
+
+  //========== Background ==========
+  BackgroundJob.on('expiration', () => {
+   console.log('iOS: I am being closed!');
+  });
+
   const taskRandom = async (taskData) => {
      if (Platform.OS === 'ios') {
          console.warn(
@@ -513,21 +523,6 @@ const HomeScreen = ({navigation}) => {
          }
      });
   };
-
-  const ShowTime = (time) =>{
-    time = time / 1000
-    const h = parseInt((time/3600) + "")  ;
-    const m = parseInt(((time % 3600) / 60) + "");
-    const s = parseInt(time % 3600 % 60);
-
-    if (h == 0 && m == 0){
-      return "Data collected for "+ s + " seconds"
-    }else if(h == 0){
-      return "Data collected for "+ m + " min and "+ s + " seconds! Thank you!"
-    }else{
-      return "Data collected for " + h + " hours" + m + " min and "+ s + " seconds! Thank you"
-    }
-  }
 
   const toggleBackground = async state => {
    if (state) {
@@ -551,51 +546,13 @@ const HomeScreen = ({navigation}) => {
      setSessionData(startTime, curTime, elpTime, dis)
    }
   };
+  //========== End Background ==========
 
-  const checkId = async() =>{
-    const userId = await getID()
-    console.log("User id-------------", userId)
-    ev.current = userId
-  }
 
-  const setStatus = async (runningStatus) => {
-      if(runningStatus == true)
-      {
-        await AsyncStorage.setItem("isRunning", "true");
-      }else{
-        await AsyncStorage.setItem("isRunning", "false");
-      }
-  }
 
-  const DataRestore = async () => {
-    const statusRun = await AsyncStorage.getItem("isRunning");
-    if (statusRun !== null) {
-        let res = JSON.parse(statusRun);
-        setIsRunning(res);
-        // console.log("status run: " + statusRun);
-        // if (!statusRun){
-        //   stopLocationUpdates()
-        //   getLocationUpdates()
-        // }
-    }else{
-        //console.log("else status run: " + statusRun);
-    }
-  };
 
-  const onAddVirtualSessionArray = async(eqa1, eqa2) =>
-  { 
-    console.log("Global array logged")
-    GlobalArraySingleton.addIntoArray(stTime, endTime, sbsStatus)
-    console.log("Add into array END")
-    const res = await getStartQnsAns()
-    console.log(res)
-    const wcId = res[0]
-    const sqa1 = res[1]
-    const sqa2 = res[2]
-    const sqa3 = res[3]
-    await addTempSessionInfo(stTime, endTime, sbsStatus, wcId, sqa1, sqa2, sqa3, eqa1, eqa2, "Nov_8_23")
-  }
 
+  //======Modal=======
   const startModalPosSelect = async (qAns1, qAns2, qAns3) => {
     if (valueWc === null){
       alert("Please select a wheelchair")
@@ -615,14 +572,21 @@ const HomeScreen = ({navigation}) => {
     }
 
     // Reset the wheelchair selection
-    setValueWc(null)
+    //setValueWc(null)
   }
 
+  //=======MIS=========
   const phonePosSelect = async (endQAns1, endQAns2) => {
     console.log("Question ans1 " + endQAns1)
     console.log("Question ans2 " + endQAns2)
     setModalVisible(!modalVisible)
-    await onAddVirtualSessionArray(endQAns1, endQAns2)
+    await onAddVirtualSessionArray(stTime, endTime, sbsStatus, endQAns1, endQAns2)
+  }
+
+  const checkId = async() =>{
+    const userId = await getID()
+    console.log("User id-------------", userId)
+    ev.current = userId
   }
 
 //  const loadWheelchairInfo = async () =>{
@@ -802,8 +766,6 @@ const HomeScreen = ({navigation}) => {
           </View>
         </ScrollView>
       </Modal>
-
-
 
       <ScrollView
         style={[styles.container, {flex : 1}]}

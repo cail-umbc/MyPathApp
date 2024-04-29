@@ -22,8 +22,8 @@ import{ AuthContext } from '../components/context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {createTempSessionInfo, createSessionInfo, addSessionInfo, getSessionInfo, addWheelchairInfo, loadUserWheelchairInfo, removeToken, getToken, checkFirstTimeLoggedIn, checkUserFirstTimeFlag, setFirstTimeLoggedIn, setID, setName, getName} from '../services/AsyncStorageService';
 import {useGetLoggedUserQuery} from '../services/userAuthApi';
-import GlobalArraySingleton from './GlobalArraySingleton';
-import GlobalWheelchairSingleton from './GlobalWheelchairSingleton';
+import GlobalArraySingleton from './SingletonAcc/GlobalArraySingleton';
+import GlobalWheelchairSingleton from './SingletonAcc/GlobalWheelchairSingleton';
 
 export function DrawerContent(props) {
     const name = useRef('')

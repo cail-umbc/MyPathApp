@@ -9,7 +9,7 @@ import {useWheelchairDeleteMutation, useCreateWheelchairMutation, useWheelchairU
 import WheelchairsView from '../components/WheelchairsView'
 import DropDownPicker from 'react-native-dropdown-picker';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import GlobalWheelchairSingleton from './GlobalWheelchairSingleton'
+import GlobalWheelchairSingleton from './SingletonAcc/GlobalWheelchairSingleton'
 
 const SettingScreen = ({navigation}) => {
   const [startModalVisible, setStartModalVisible] = React.useState(false);

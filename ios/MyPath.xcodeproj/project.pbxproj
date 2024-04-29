@@ -501,11 +501,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CURRENT_PROJECT_VERSION = 18;
-				DEVELOPMENT_TEAM = W5K4A33JB5;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_TEAM = 2Q3C3T4DXB;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = MyPath/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = MyPath;
+				INFOPLIST_KEY_CFBundleDisplayName = AccessMyPath;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -518,8 +520,9 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.routemypath.MyPathApp;
+				PRODUCT_BUNDLE_IDENTIFIER = edu.uwm.r2d2.accessmypath;
 				PRODUCT_NAME = MyPath;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "MyPath-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -533,10 +536,12 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CURRENT_PROJECT_VERSION = 18;
-				DEVELOPMENT_TEAM = W5K4A33JB5;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_TEAM = 2Q3C3T4DXB;
 				INFOPLIST_FILE = MyPath/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = MyPath;
+				INFOPLIST_KEY_CFBundleDisplayName = AccessMyPath;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -549,8 +554,9 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.routemypath.MyPathApp;
+				PRODUCT_BUNDLE_IDENTIFIER = edu.uwm.r2d2.accessmypath;
 				PRODUCT_NAME = MyPath;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "MyPath-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";

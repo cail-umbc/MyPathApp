@@ -4,7 +4,7 @@
 import React, { useEffect, useRef, useState, useLayoutEffect } from 'react';
 import {Button, FlatList, View, Text, StyleSheet, SafeAreaView} from 'react-native';
 import {getSessionInfo, getTempSessionInfo} from '../services/AsyncStorageService'; 
-import GlobalArraySingleton from './GlobalArraySingleton';
+import GlobalArraySingleton from './SingletonAcc/GlobalArraySingleton';
 import SummaryCard from '../components/Cards'
 
 const ExploreScreen = ({navigation}) => {

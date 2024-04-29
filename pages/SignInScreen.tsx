@@ -162,8 +162,8 @@ const SignInScreen = ({navigation}) => {
 
 
   const loginHandle = async (email, password) => {
+    console.log(email, password)
     var res = await DataValidate(email, password);
-
     if(Boolean(res) == true || (email == "user1@email.com" && password == "abcd-1234"))
     {
       console.log("True");
