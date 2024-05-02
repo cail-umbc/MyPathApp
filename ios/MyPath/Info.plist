@@ -36,11 +36,11 @@
 		</dict>
 	</dict>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Give me permission senpai</string>
+	<string>MyPath needs your location to show your current location on the map</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Give me permission senpai</string>
+	<string>MyPath needs your location to show your current location on the map</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Give me permission senpai</string>
+	<string>MyPath needs your location to show your current location on the map</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>EvilIcons.ttf</string>
