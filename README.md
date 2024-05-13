@@ -68,20 +68,20 @@ Ensure the following tools are installed on your system before proceeding:
 
 ### Components of the App
 ### Cards
-SummaryCard: Used in ExploreScreen to display session history graph and statistics.
-Custom Button<br>
+SummaryCard: Used in ExploreScreen to display session history graph and statistics.<br>
+<br>
 CustomBtn: A button component created using Touchable, Text, and View components.<br>
-Wheelchair Information View<br>
+<br>
 WheelchairsView: Displays wheelchair information using a FlatList.
 
 ### Singleton Classes for Data Management
 ## Global Array Singleton
 GlobalArraySingleton: Manages and passes session information throughout the app's pages.<br>
-Global Wheelchair Singleton<br>
+<br>
 GlobalWheelchairSingleton: Manages and displays wheelchair information to all the app pages as needed.
 
 ### Services
 ## AsyncStorage Service
 AsyncStorageService: Manages storage and retrieval of data such as tokens, login details, user information, data collection, session details, wheelchair data, and pre-post question information using the device's asynchronous storage.<br>
-User Authentication API<br>
+<br>
 userAuthApi: Handles API endpoints for user authentication and data transfer to the server.
