@@ -31,3 +31,51 @@ Ensure the following tools are installed on your system before proceeding:
 2. Open a command prompt or terminal and navigate to the project directory:
    ```bash
    cd MyPathApp
+
+### Installing Node Modules
+3. Install the required Node modules:
+    ```npm install
+
+### Preparing iOS Environment
+4. Navigate to the iOS directory:
+    ```cd ios
+
+5. Install iOS libraries using Yarn or Pod:
+    ```yarn install # or pod install
+
+6. Return to the project home directory:
+    ```cd ..
+
+### Configuring Google Maps API Key for Android
+7. Add your Google Maps API key to the Android manifest:
+    ```<meta-data
+        ```android:name="com.google.android.geo.API_KEY"
+        ```android:value="your_API_key"/>
+
+
+### Building and Running the Android App
+8. Connect your physical Android device to your computer with the debug option enabled, or start an emulator. Uninstall any previous versions of the app from your device.
+
+9. Build and run the Android app:
+    ```npx react-native run-android
+
+
+### Components of the App
+### Cards
+SummaryCard: Used in ExploreScreen to display session history graph and statistics.
+Custom Button
+CustomBtn: A button component created using Touchable, Text, and View components.
+Wheelchair Information View
+WheelchairsView: Displays wheelchair information using a FlatList.
+
+### Singleton Classes for Data Management
+## Global Array Singleton
+GlobalArraySingleton: Manages and passes session information throughout the app's pages.
+Global Wheelchair Singleton
+GlobalWheelchairSingleton: Manages and displays wheelchair information to all the app pages as needed.
+
+### Services
+## AsyncStorage Service
+AsyncStorageService: Manages storage and retrieval of data such as tokens, login details, user information, data collection, session details, wheelchair data, and pre-post question information using the device's asynchronous storage.
+User Authentication API
+userAuthApi: Handles API endpoints for user authentication and data transfer to the server.
