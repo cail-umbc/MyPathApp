@@ -52,7 +52,7 @@ const SignInScreen = ({navigation}) => {
     }
   };
 
-
+  
   const handlePasswordChange = val => {
     if (val.trim().length >= 6) {
       setData({
@@ -69,7 +69,7 @@ const SignInScreen = ({navigation}) => {
     }
   };
 
-
+  // change the password view
   const updateSecureTextEntry = () => {
     setData({
       ...data,
@@ -102,6 +102,7 @@ const SignInScreen = ({navigation}) => {
   const [loginUser] = useLoginUserMutation()
 
 
+  // user information validator
   const DataValidate = async (email, password) => {
     const formData = {email, password}
     const res = await loginUser(formData)
@@ -161,6 +162,7 @@ const SignInScreen = ({navigation}) => {
   };
 
 
+  // handle the login system
   const loginHandle = async (email, password) => {
     console.log(email, password)
     var res = await DataValidate(email, password);

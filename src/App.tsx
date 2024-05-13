@@ -1,5 +1,4 @@
-// React Navigate Drawer with Bottom Tab
-// https://aboutreact.com/bottom-tab-view-inside-navigation-drawer/
+// Entry point of the react-native app
 
 import 'react-native-gesture-handler';
 
@@ -23,10 +22,12 @@ import { MenuProvider } from 'react-native-popup-menu';
 import {Provider} from "react-redux";
 import {store} from "../App/store";
 
+// Define all the navigation stacks using React Navigation
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
 
+// Component to define the Bottom Tab Navigator
 const BottomTabStack = () => {
   return (
     <Tab.Navigator
@@ -42,6 +43,8 @@ const BottomTabStack = () => {
         },
       }}>
 
+    {/* Define individual screens within the Tab
+     Navigator with custom icons and styles */}
       <Tab.Screen
         name="HomeScreen"
         component={HomeScreen}
@@ -76,6 +79,8 @@ const BottomTabStack = () => {
   );
 };
 
+
+// Stack navigator for the Home screen
 const HomeScreenStack = () => {
   return (
     <Stack.Navigator
@@ -86,6 +91,7 @@ const HomeScreenStack = () => {
   );
 };
 
+// Stack navigator for the Profile screen, including additional screens within this stack
 const ProfileScreenStack = () => {
   return (
     <Stack.Navigator
@@ -98,14 +104,18 @@ const ProfileScreenStack = () => {
   );
 };
 
+
+// The Main React Native App component
 function App(){
 
+  // Initial state for the login process
   const initialLoginState = {
     isLoading: true,
     userName: null,
     userToken: null,
   };
 
+  // Reducer for managing login state changes
   const loginReducer = (prevState, action) => {
     switch (action.type) {
       case 'RETRIEVE_TOKEN':
@@ -138,11 +148,14 @@ function App(){
     }
   };
 
+
+  // State and dispatcher for login management
   const [loginState, dispatch] = React.useReducer(
     loginReducer,
     initialLoginState,
   );
 
+  // Context for managing authentication and theme toggling // theme toggling is not being in used
   const authContext = React.useMemo(
     () => ({
       signIn: async foundUser => {
@@ -173,6 +186,7 @@ function App(){
     [],
   );
 
+  // Effect to retrieve the token at initial load
   useEffect(() => {
     setTimeout(async () => {
       // setIsLoading(false);
@@ -188,6 +202,7 @@ function App(){
     }, 1000);
   }, []);
 
+  // Show loading indicator while the app is fetching user token
   if (loginState.isLoading) {
     return (
       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>

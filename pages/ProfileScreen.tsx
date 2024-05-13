@@ -12,6 +12,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import GlobalWheelchairSingleton from './SingletonAcc/GlobalWheelchairSingleton'
 
 const SettingScreen = ({navigation}) => {
+  // variables and states 
   const [startModalVisible, setStartModalVisible] = React.useState(false);
   const curAccsTkn = useRef('');
   const name = useRef('');
@@ -27,6 +28,8 @@ const SettingScreen = ({navigation}) => {
   DropDownPicker.setListMode("SCROLLVIEW");
 
   const [data, setData] = React.useState([]);
+
+  // load data from async storage using useEffect
   useEffect(() => {
       (async () => {
         await updateWheelchairInfo()
@@ -62,6 +65,7 @@ const SettingScreen = ({navigation}) => {
 
 
 
+  // update the user access token
   const UpdateAccessToken = async (suppressError) =>{
     try {
       const asyToken = await getToken();
@@ -86,9 +90,8 @@ const SettingScreen = ({navigation}) => {
     }
   }
 
-
+  // update wheelchair information from the server
   const updateWheelchairInfo = async () => {
-
     const tokenStat = await UpdateAccessToken(true)
     if (!tokenStat){
       setData(await loadUserWheelchairInfo())
@@ -107,6 +110,7 @@ const SettingScreen = ({navigation}) => {
     .catch(error => console.error(error));   
   }
 
+  // Store/update the wheelchair information
   const assignWheelchairData = async(data) =>{
       await addWheelchairInfo(data, true)
       const wcInfos = await loadUserWheelchairInfo()
@@ -114,13 +118,14 @@ const SettingScreen = ({navigation}) => {
       GlobalWheelchairSingleton.setArray(wcInfos)
   }
 
+  // find a single wheelchair information using the wheelchair id
   const getObjectById = (id) => {
     const foundObject = GlobalWheelchairSingleton.getItems().find(obj => obj.id === id);
     return foundObject || null; // Return null if no object is found
   };
 
 
-
+  // edit a wheelchair information based on the wheelchair id
   const handleEdit = (itemId)=>{
     console.log(itemId)
     
@@ -155,6 +160,7 @@ const SettingScreen = ({navigation}) => {
   }
   
   
+  // delete a wheelchair from server and singleton array
   const checkAccessToken = useAccessTokenStatus();
   const [wheelchairDelete] = useWheelchairDeleteMutation()
   const handleDelete = async (itemId) => {
@@ -180,6 +186,7 @@ const SettingScreen = ({navigation}) => {
     }
   };
 
+  // render a single wheelchair information
   const renderItem = ({ item }) => (
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 15 }}>
         <Text
@@ -233,6 +240,9 @@ const SettingScreen = ({navigation}) => {
       {label: 'Other', value: 'other'},
     ]);
 
+
+
+    // create a new wheelchair and send the data to the server using mutation
     const [createWheelchair] = useCreateWheelchairMutation()
     const addWheelchair = async ()=> {
       if (!wc_identify){
@@ -310,6 +320,7 @@ const SettingScreen = ({navigation}) => {
     }
 
 
+    // update the existing wheelchair with wheelchair update mutation
     const [wheelchairUpdate] = useWheelchairUpdateMutation()
     const editWheelchair = async()=>{
 
@@ -373,7 +384,6 @@ const SettingScreen = ({navigation}) => {
     }
 
 
-
   return (
     <SafeAreaView style={{flex: 1}}>
       <View style={{padding: 16}}>
@@ -404,12 +414,7 @@ const SettingScreen = ({navigation}) => {
           <Text style={styles.addWcButtonText}>+ Add new wheelchair</Text>
         </TouchableOpacity>     
       
-
-
-
-
-
-
+      
       <Modal
         animationType="slide"
         transparent={true}

@@ -26,10 +26,12 @@ import GlobalArraySingleton from './SingletonAcc/GlobalArraySingleton';
 import GlobalWheelchairSingleton from './SingletonAcc/GlobalWheelchairSingleton';
 
 export function DrawerContent(props) {
+    // Initial states of the variables
     const name = useRef('')
     const accs = useRef('');
     const [token, setToken] = useState({})
 
+    // load the required variable from server and async storage
     useEffect(() => {
         (async () => {
             const asyToken = await getToken()
@@ -67,12 +69,14 @@ export function DrawerContent(props) {
         })();
     }, [])
 
+    // load the wheelchair information to the singleton array
     const loadWheelchairInfo_To_GlobalArray = async () =>{
         const wcData = await loadUserWheelchairInfo()
         GlobalWheelchairSingleton.setArray(wcData)
 
     }
 
+    // load the user information from the server
     const getUserData = async() => {
         
         fetch('https://mypathweb.csi.miamioh.edu/api/user/idinfo/', {
@@ -86,6 +90,7 @@ export function DrawerContent(props) {
         .catch(error => console.error(error));
     }
 
+    // store user information to the async storagge
     const assignData = async(data) => {
         name.current = data.name
         await setID(data.id + "")
@@ -109,6 +114,7 @@ export function DrawerContent(props) {
         assignSessionsData([])
     }
 
+    // store previous sessions information from the server
     const assignSessionsData = async(data) => {
         
         const tempSesArr = []
@@ -128,6 +134,7 @@ export function DrawerContent(props) {
         name.current = await getName()
     }
 
+    // load wheelchair data from the server
     const getUserWheelchairInfo = async() => {
         console.log("User wheelchair get")
         fetch('https://mypathweb.csi.miamioh.edu/api/user/wcdata/', {
@@ -141,6 +148,7 @@ export function DrawerContent(props) {
         .catch(error => console.error(error));   
     }
 
+    // store wheelchair data
     const assignWheelchairData = async(data) =>{
         await addWheelchairInfo(data, true)
         await loadWheelchairInfo_To_GlobalArray()
@@ -151,6 +159,7 @@ export function DrawerContent(props) {
     const {data, error, isError, isSuccess, isLoading} = useGetLoggedUserQuery(token.access)
     //const {dataSes, errorSes, isErrorSes, isSuccessSes, isLoadingSes} = useGetUserSessionsQuery(token.access)
 
+    // clear the user token and async storage data
     const SignOutAndRemoveToken = async () =>
     {
         await createSessionInfo([])

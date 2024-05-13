@@ -31,6 +31,7 @@ build/
 .idea
 .gradle
 *.iml
+.AndroidManifest.xml
 
 # node.js
 #

@@ -10,6 +10,8 @@ interface MapViewProps {
   coords: GeoCoordinates | null;
 }
 
+// mapview component for the homescreen
+
 const MapView = ({ coords }: MapViewProps) => {
   const mapRef = useRef<RNMapView>(null);
 

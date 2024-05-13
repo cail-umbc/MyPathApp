@@ -10,6 +10,7 @@ import SummaryCard from '../components/Cards'
 const ExploreScreen = ({navigation}) => {
   const [myArray, setMyArray] = useState(GlobalArraySingleton.getItems());
 
+  // update visual data from the singelton array
   useEffect(() => {
     const updateMyArray = () => {
       setMyArray([...GlobalArraySingleton.getItems()]);
@@ -27,18 +28,21 @@ const ExploreScreen = ({navigation}) => {
   //   flatListRef.current.scrollToIndex({ index, animated: true });
   // };
 
+  // convert the Unix timestamp to human readable datetime format
   const formatUnixTimestamp = (unixTimestamp) => {
     const dateObject = new Date(unixTimestamp * 1000);
     const humanDate = dateObject.toLocaleString();
     return humanDate;
   }
 
+  // convert timestamp (milisecond) to human readable datetime format
   const formatTimestamp = (timestamp) => {
     const dateObject = new Date(timestamp);
     const humanDate = dateObject.toLocaleString();
     return humanDate;
   }
 
+  // render a single session information
   const renderItem = ({ item }) => (
     <View style={styles.item}>
       <Text style={styles.title}>Session  {parseInt(item.lid) + 1}</Text>
