@@ -13,7 +13,7 @@ Welcome to the MyPath project. The purpose of this project is to build an access
 
 # Project Setup Documentation
 
-This README outlines the necessary steps to set up and run the mobile application project. It includes instructions for cloning the project, installing dependencies, and running the application on an Android device. This guide also describes the architecture of the app, including its components and services.
+This README outlines the necessary steps to set up and run the mobile application project. It includes instructions for cloning the project, installing dependencies, and running the application.
 
 ## Prerequisites
 Ensure the following tools are installed on your system before proceeding:
