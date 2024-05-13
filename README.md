@@ -34,30 +34,36 @@ Ensure the following tools are installed on your system before proceeding:
 
 ### Installing Node Modules
 3. Install the required Node modules:
-    ```npm install
+    ```bash
+    npm install
 
 ### Preparing iOS Environment
 4. Navigate to the iOS directory:
-    ```cd ios
+    ```bash
+    cd ios
 
 5. Install iOS libraries using Yarn or Pod:
-    ```yarn install # or pod install
+    ```bash
+    yarn install # or pod install
 
 6. Return to the project home directory:
-    ```cd ..
+    ```bash
+    cd ..
 
 ### Configuring Google Maps API Key for Android
 7. Add your Google Maps API key to the Android manifest:
-    ```<meta-data
-        ```android:name="com.google.android.geo.API_KEY"
-        ```android:value="your_API_key"/>
+    ```bash
+    <meta-data
+        android:name="com.google.android.geo.API_KEY"
+        android:value="your_API_key"/>
 
 
 ### Building and Running the Android App
 8. Connect your physical Android device to your computer with the debug option enabled, or start an emulator. Uninstall any previous versions of the app from your device.
 
 9. Build and run the Android app:
-    ```npx react-native run-android
+    ```bash
+    npx react-native run-android
 
 
 ### Components of the App
